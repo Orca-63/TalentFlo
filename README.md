@@ -33,20 +33,30 @@ A web-based recruitment platform built using Django to streamline campus hiring 
 git clone https://github.com/Orca-63/TalentFlo
 
 cd RecruitmentPlatform 
+
 ###  2. Create and activate a virtual environment
 python -m venv venv
+
 venv\Scripts\activate
+
 ###  3. Create and activate a virtual environment
 pip install django
+
 pip install celery
+
 pip install redis
+
 pip install flower
+
 ### 4. Start Redis server via Docker
 docker run -p 6379:6379 redis
+
 ### 5. Start the Celery worker
-celery -A your_project_name worker --pool=solo --loglevel=info
+celery -A RecruitmentPlatform worker --pool=solo --loglevel=info
+
 ### 6. Start the Flower monitoring dashboard
-celery -A your_project_name flower
+celery -A RecruitmentPlatform flower
+
 ### 7. Run the Django development server
 python manage.py runserver
 
