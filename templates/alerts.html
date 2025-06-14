@@ -1,0 +1,311 @@
+{% if messages %}
+<style>
+    .messages-wrapper {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .message-container {
+        margin-bottom: 12px;
+        animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transform-origin: right center;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100%) scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+
+    @keyframes slideOut {
+        from {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateX(100%) scale(0.9);
+        }
+    }
+
+    .message {
+        position: relative;
+        padding: 16px 20px 16px 50px;
+        border-radius: 12px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.5;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.12),
+            0 2px 8px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        overflow: hidden;
+    }
+
+    .message::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        transition: width 0.3s ease;
+    }
+
+    .message::after {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        font-weight: 600;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .message:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.15),
+            0 4px 12px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .message:hover::before {
+        width: 100%;
+    }
+
+    /* Success messages */
+    .message-success {
+        background: rgba(255, 255, 255, 1);
+        color: #065f46;
+        border-left: 4px solid #10b981;
+    }
+
+    .message-success::before {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .message-success::after {
+        content: '✓';
+        color: #10b981;
+    }
+
+    /* Error/danger messages */
+    .message-error,
+    .message-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: #7f1d1d;
+        border-left: 4px solid #ef4444;
+    }
+
+    .message-error::before,
+    .message-danger::before {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    .message-error::after,
+    .message-danger::after {
+        content: '⚠';
+        color: #ef4444;
+    }
+
+    /* Warning messages */
+    .message-warning {
+        background: rgba(245, 158, 11, 0.15);
+        color: #78350f;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .message-warning::before {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .message-warning::after {
+        content: '⚡';
+        color: #f59e0b;
+    }
+
+    /* Info messages */
+    .message-info {
+        background: rgba(102, 126, 234, 0.15);
+        color: #312e81;
+        border-left: 4px solid #667eea;
+    }
+
+    .message-info::before {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .message-info::after {
+        content: 'ℹ';
+        color: #667eea;
+    }
+
+    /* Debug messages */
+    .message-debug {
+        background: rgba(107, 114, 128, 0.15);
+        color: #374151;
+        border-left: 4px solid #6b7280;
+    }
+
+    .message-debug::before {
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    }
+
+    .message-debug::after {
+        content: '🔧';
+        color: #6b7280;
+    }
+
+    /* Close button */
+    .message-close {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        background: none;
+        border: none;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: all 0.2s ease;
+        color: inherit;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .message-close:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+    }
+
+    /* Progress bar for auto-dismiss */
+    .message-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 0 0 12px 12px;
+        animation: progress 5s linear forwards;
+    }
+
+    @keyframes progress {
+        from {
+            width: 100%;
+        }
+
+        to {
+            width: 0%;
+        }
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+        .messages-wrapper {
+            top: 10px;
+            right: 10px;
+            left: 10px;
+            max-width: none;
+        }
+
+        .message {
+            padding: 14px 16px 14px 44px;
+            font-size: 13px;
+        }
+
+        .message::after {
+            left: 14px;
+            font-size: 16px;
+        }
+    }
+
+    /* Animation classes for JavaScript control */
+    .message-fadeout {
+        animation: slideOut 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+</style>
+
+<div class="messages-wrapper">
+    {% for message in messages %}
+    <div class="message-container">
+        <div class="message message-{{ message.level_tag }}" data-message-id="{{ forloop.counter }}">
+            {{ message }}
+            <button class="message-close" onclick="dismissMessage(this)">&times;</button>
+            <div class="message-progress"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Auto-dismiss messages after 5 seconds
+    document.addEventListener('DOMContentLoaded', function () {
+        const messages = document.querySelectorAll('.message');
+
+        messages.forEach((message, index) => {
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (message.parentElement) {
+                    dismissMessage(message.querySelector('.message-close'));
+                }
+            }, 5000 + (index * 500)); // Stagger dismissals
+        });
+    });
+
+    function dismissMessage(button) {
+        const messageContainer = button.closest('.message-container');
+        const message = button.closest('.message');
+
+        // Add fade out animation
+        message.classList.add('message-fadeout');
+
+        // Remove from DOM after animation
+        setTimeout(() => {
+            if (messageContainer && messageContainer.parentElement) {
+                messageContainer.parentElement.removeChild(messageContainer);
+            }
+        }, 300);
+    }
+
+    // Click to dismiss functionality
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('message')) {
+            dismissMessage(e.target.querySelector('.message-close'));
+        }
+    });
+
+    // Keyboard accessibility - ESC to dismiss all messages
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            const messages = document.querySelectorAll('.message-close');
+            messages.forEach(closeBtn => dismissMessage(closeBtn));
+        }
+    });
+</script>
+{% endif %}

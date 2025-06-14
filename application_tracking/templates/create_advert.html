@@ -1,0 +1,645 @@
+{% extends 'base.html' %}
+{% block title %} New Advert {% endblock %}
+{% block content %}
+{% include 'header.html' %}
+
+<style>
+    .detail-page {
+        min-height: 100vh;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        padding: 60px 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .detail-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.08) 0%, transparent 50%);
+        animation: float 12s ease-in-out infinite;
+        z-index: 0;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px) rotate(0deg) scale(1);
+        }
+
+        50% {
+            transform: translateY(-30px) rotate(1deg) scale(1.02);
+        }
+    }
+
+    .detail-container {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 120px);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .job-detail {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 50px;
+        box-shadow:
+            0 20px 60px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        animation: slideUp 0.8s ease-out both;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .job-detail::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 24px 24px 0 0;
+    }
+
+    .job-detail h2 {
+        color: #374151;
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 40px;
+        text-align: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -1px;
+        line-height: 1.2;
+        animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .job-detail form {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .job-detail form p {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 0;
+        animation: slideIn 0.6s ease-out both;
+    }
+
+    .job-detail form p:nth-child(odd) {
+        animation-delay: 0.1s;
+    }
+
+    .job-detail form p:nth-child(even) {
+        animation-delay: 0.2s;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .job-detail form label {
+        color: #374151;
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 4px;
+        letter-spacing: 0.5px;
+    }
+
+    .job-detail form input[type="text"],
+    .job-detail form input[type="email"],
+    .job-detail form input[type="number"],
+    .job-detail form input[type="url"],
+    .job-detail form input[type="file"],
+    .job-detail form select,
+    .job-detail form textarea {
+        padding: 16px 20px;
+        border: 2px solid rgba(209, 213, 219, 0.3);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        font-size: 16px;
+        font-weight: 500;
+        color: #374151;
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
+
+    .job-detail form input[type="text"]:focus,
+    .job-detail form input[type="email"]:focus,
+    .job-detail form input[type="number"]:focus,
+    .job-detail form input[type="url"]:focus,
+    .job-detail form input[type="file"]:focus,
+    .job-detail form select:focus,
+    .job-detail form textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-2px);
+        box-shadow:
+            0 8px 25px rgba(102, 126, 234, 0.15),
+            0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .job-detail form textarea {
+        min-height: 120px;
+        resize: vertical;
+        font-family: inherit;
+        line-height: 1.6;
+    }
+
+    .job-detail form select {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 16px;
+        padding-right: 40px;
+        appearance: none;
+    }
+
+    .job-detail form input[type="file"] {
+        padding: 12px 16px;
+        cursor: pointer;
+        position: relative;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        border: 2px dashed rgba(102, 126, 234, 0.3);
+    }
+
+    .job-detail form input[type="file"]:hover {
+        border-color: #667eea;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+
+    .job-detail form input::placeholder,
+    .job-detail form textarea::placeholder {
+        color: #9CA3AF;
+        font-weight: 400;
+    }
+
+    .btn {
+        padding: 18px 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        position: relative;
+        overflow: hidden;
+        margin-top: 20px;
+        box-shadow:
+            0 8px 30px rgba(102, 126, 234, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        letter-spacing: 0.5px;
+        animation: buttonFadeIn 1s ease-out 0.8s both;
+    }
+
+    @keyframes buttonFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow:
+            0 15px 45px rgba(102, 126, 234, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .btn:active {
+        transform: translateY(-1px) scale(1);
+        box-shadow:
+            0 8px 25px rgba(102, 126, 234, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    /* Form validation styles */
+    .job-detail form input:invalid,
+    .job-detail form textarea:invalid,
+    .job-detail form select:invalid {
+        border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .job-detail form input:valid,
+    .job-detail form textarea:valid,
+    .job-detail form select:valid {
+        border-color: rgba(16, 185, 129, 0.5);
+    }
+
+    /* Loading state for form submission */
+    .btn.loading {
+        pointer-events: none;
+        position: relative;
+        color: transparent;
+    }
+
+    .btn.loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -10px 0 0 -10px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Error messages styling */
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+    }
+
+    .errorlist li {
+        color: #EF4444;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 8px 12px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 8px;
+        margin-bottom: 4px;
+        animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-4px);
+        }
+
+        75% {
+            transform: translateX(4px);
+        }
+    }
+
+    /* Help text styling */
+    .helptext {
+        color: #6B7280;
+        font-size: 0.8rem;
+        margin-top: 4px;
+        font-style: italic;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .detail-page {
+            padding: 30px 15px;
+        }
+
+        .job-detail {
+            padding: 30px 25px;
+            border-radius: 20px;
+        }
+
+        .job-detail h2 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+
+        .job-detail form {
+            gap: 20px;
+        }
+
+        .job-detail form input[type="text"],
+        .job-detail form input[type="email"],
+        .job-detail form input[type="number"],
+        .job-detail form input[type="url"],
+        .job-detail form input[type="file"],
+        .job-detail form select,
+        .job-detail form textarea {
+            padding: 14px 16px;
+            font-size: 16px;
+            /* Prevent zoom on iOS */
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .job-detail {
+            padding: 25px 20px;
+        }
+
+        .job-detail h2 {
+            font-size: 1.6rem;
+        }
+    }
+
+    /* Accessibility and reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+
+        .detail-page::before,
+        .job-detail,
+        .job-detail h2,
+        .job-detail form p,
+        .btn {
+            animation: none;
+        }
+
+        .job-detail form input:focus,
+        .job-detail form textarea:focus,
+        .job-detail form select:focus,
+        .btn:hover {
+            transform: none;
+        }
+    }
+
+    @media (prefers-contrast: high) {
+        .job-detail {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .job-detail form input[type="text"],
+        .job-detail form input[type="email"],
+        .job-detail form input[type="number"],
+        .job-detail form input[type="url"],
+        .job-detail form input[type="file"],
+        .job-detail form select,
+        .job-detail form textarea {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    /* Focus states for accessibility */
+    .job-detail form input:focus,
+    .job-detail form textarea:focus,
+    .job-detail form select:focus,
+    .btn:focus {
+        outline: 2px solid #667eea;
+        outline-offset: 2px;
+    }
+
+    /* Floating decoration elements */
+    .detail-page::after {
+        content: '';
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 50%;
+        top: 15%;
+        right: -5%;
+        animation: floatSlow 15s ease-in-out infinite;
+        z-index: 1;
+    }
+
+    @keyframes floatSlow {
+
+        0%,
+        100% {
+            transform: translateY(0px) translateX(0px) rotate(0deg);
+        }
+
+        33% {
+            transform: translateY(-50px) translateX(30px) rotate(120deg);
+        }
+
+        66% {
+            transform: translateY(-25px) translateX(-15px) rotate(240deg);
+        }
+    }
+</style>
+
+<section class="detail-page">
+    <div class="detail-container container">
+        <div class="job-detail">
+            <h2>{{title}}</h2>
+            <form method="POST" enctype="multipart/form-data" id="advertForm">
+                {% csrf_token %}
+                {{job_advert_form.as_p}}
+                <button type="submit" class="btn" id="submitBtn">{{btn_text}}</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('advertForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const formFields = form.querySelectorAll('input, textarea, select');
+
+        // Add staggered animation to form fields
+        formFields.forEach((field, index) => {
+            const parentP = field.closest('p');
+            if (parentP) {
+                parentP.style.animationDelay = `${0.1 + (index * 0.05)}s`;
+            }
+        });
+
+        // Enhanced form submission with loading state
+        form.addEventListener('submit', function (e) {
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // Reset after 10 seconds as fallback
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }, 10000);
+        });
+
+        // Real-time validation feedback
+        formFields.forEach(field => {
+            field.addEventListener('blur', function () {
+                if (this.checkValidity()) {
+                    this.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+                } else {
+                    this.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                }
+            });
+
+            field.addEventListener('input', function () {
+                // Reset border color when user starts typing
+                this.style.borderColor = 'rgba(209, 213, 219, 0.3)';
+            });
+        });
+
+        // Auto-resize textarea
+        const textareas = form.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            textarea.addEventListener('input', function () {
+                this.style.height = 'auto';
+                this.style.height = Math.max(120, this.scrollHeight) + 'px';
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            // Ctrl + Enter to submit form
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                form.submit();
+            }
+
+            // Escape to clear current field
+            if (e.key === 'Escape' && document.activeElement.matches('input, textarea, select')) {
+                document.activeElement.blur();
+            }
+        });
+
+        // File input enhancement
+        const fileInputs = form.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                if (this.files.length > 0) {
+                    this.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+                    this.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)';
+                }
+            });
+        });
+
+        // Form auto-save to sessionStorage (if supported)
+        if (typeof (Storage) !== "undefined") {
+            const formData = {};
+            const saveKey = 'advertForm_' + Date.now();
+
+            // Load saved data on page load
+            const savedData = sessionStorage.getItem('advertFormData');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    Object.keys(data).forEach(name => {
+                        const field = form.querySelector(`[name="${name}"]`);
+                        if (field && field.type !== 'file') {
+                            field.value = data[name];
+                        }
+                    });
+                } catch (e) {
+                    console.log('Could not restore form data');
+                }
+            }
+
+            // Save form data on input
+            formFields.forEach(field => {
+                if (field.type !== 'file') {
+                    field.addEventListener('input', function () {
+                        formData[this.name] = this.value;
+                        sessionStorage.setItem('advertFormData', JSON.stringify(formData));
+                    });
+                }
+            });
+
+            // Clear saved data on successful submission
+            form.addEventListener('submit', function () {
+                sessionStorage.removeItem('advertFormData');
+            });
+        }
+
+        // Add visual feedback for required fields
+        const requiredFields = form.querySelectorAll('[required]');
+        requiredFields.forEach(field => {
+            const label = field.previousElementSibling;
+            if (label && label.tagName === 'LABEL') {
+                label.innerHTML += ' <span style="color: #EF4444;">*</span>';
+            }
+        });
+    });
+</script>
+
+{% endblock %}

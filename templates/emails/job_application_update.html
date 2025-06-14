@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Update</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(1deg);
+            }
+        }
+
+        .update-container {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .update-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 1px 3px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .update-card:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 1px 3px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .update-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .update-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .update-title {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .update-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .update-content {
+            color: #374151;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 24px;
+        }
+
+        .message-paragraph {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-left: 4px solid #667eea;
+            border-radius: 0 12px 12px 0;
+            position: relative;
+        }
+
+        .message-paragraph::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .highlight-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        .closing-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+            text-align: center;
+        }
+
+        .closing-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+            color: #059669;
+        }
+
+        .closing-message .icon {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .signature {
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+            text-align: center;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .company-info {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .update-card {
+                padding: 40px 24px;
+                margin: 20px;
+            }
+
+            .update-title {
+                font-size: 24px;
+            }
+
+            .update-content {
+                font-size: 15px;
+            }
+
+            .message-paragraph {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="update-container">
+        <div class="update-card">
+            <div class="update-header">
+                <span class="update-icon">📧</span>
+                <h1 class="update-title">Application Update</h1>
+                <p class="update-subtitle">Thank you for your interest in joining our team</p>
+            </div>
+
+            <div class="update-content">
+                <div class="greeting">
+                    Dear <span class="highlight-text">{{applicant_name}}</span>,
+                </div>
+
+                <div class="message-paragraph">
+                    Thank you for applying for the <span class="highlight-text">{{job_title}}</span> position at <span
+                        class="highlight-text">{{company_name}}</span>.
+                    We were impressed by your background and accomplishments.
+                    However, after careful consideration, we have decided to move forward with other candidates at this
+                    time.
+                </div>
+
+                <div class="closing-message">
+                    <span class="icon">🌟</span>
+                    We appreciate your interest and encourage you to apply for future opportunities that match your
+                    skills and experience.
+                    Wishing you the best in your career endeavors.
+                </div>
+
+                <div class="signature">
+                    <div class="company-info">Human Resources Team</div>
+                    <div>{{company_name}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

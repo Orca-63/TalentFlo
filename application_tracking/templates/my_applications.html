@@ -1,0 +1,586 @@
+{% extends 'base.html' %}
+{% block title %} {{ job_advert.title }}  Job Details {% endblock %}
+{% block content %}
+{% include 'header.html' %}
+
+<style>
+    .applications-page {
+        min-height: 100vh;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        padding: 60px 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .applications-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.08) 0%, transparent 50%);
+        animation: float 12s ease-in-out infinite;
+        z-index: 0;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px) rotate(0deg) scale(1);
+        }
+
+        50% {
+            transform: translateY(-30px) rotate(1deg) scale(1.02);
+        }
+    }
+
+    .container {
+        position: relative;
+        z-index: 2;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .table-wrapper {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow:
+            0 20px 60px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        position: relative;
+        overflow: hidden;
+        animation: slideUp 0.8s ease-out both;
+        margin-bottom: 40px;
+    }
+
+    .table-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 24px 24px 0 0;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        font-size: 0.95rem;
+        background: transparent;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    thead {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        position: relative;
+    }
+
+    thead::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    th {
+        padding: 20px 16px;
+        text-align: left;
+        font-weight: 700;
+        color: #374151;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border: none;
+        position: relative;
+        background: transparent;
+        animation: fadeIn 1s ease-out both;
+    }
+
+    th:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    th:nth-child(2) {
+        animation-delay: 0.15s;
+    }
+
+    th:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    th:nth-child(4) {
+        animation-delay: 0.25s;
+    }
+
+    th:nth-child(5) {
+        animation-delay: 0.3s;
+    }
+
+    th:nth-child(6) {
+        animation-delay: 0.35s;
+    }
+
+    th:nth-child(7) {
+        animation-delay: 0.4s;
+    }
+
+    th:nth-child(8) {
+        animation-delay: 0.45s;
+    }
+
+    th:nth-child(9) {
+        animation-delay: 0.5s;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    tbody tr {
+        border-bottom: 1px solid rgba(209, 213, 219, 0.2);
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        animation: slideIn 0.6s ease-out both;
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    tbody tr:nth-child(odd) {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    tbody tr:hover {
+        background: rgba(102, 126, 234, 0.08);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    }
+
+    tbody tr:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    tbody tr:nth-child(2) {
+        animation-delay: 0.15s;
+    }
+
+    tbody tr:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    tbody tr:nth-child(4) {
+        animation-delay: 0.25s;
+    }
+
+    tbody tr:nth-child(5) {
+        animation-delay: 0.3s;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    td {
+        padding: 18px 16px;
+        color: #374151;
+        font-weight: 500;
+        border: none;
+        vertical-align: middle;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    td a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: rgba(102, 126, 234, 0.1);
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        display: inline-block;
+        border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    td a:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    /* No applications message */
+    tbody tr td[colspan] {
+        text-align: center;
+        color: #6B7280;
+        font-style: italic;
+        padding: 60px 20px;
+        font-size: 1.1rem;
+        background: rgba(102, 126, 234, 0.05);
+    }
+
+    /* Pagination styles */
+    .pagination {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 30px 40px;
+        box-shadow:
+            0 20px 60px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        position: relative;
+        overflow: hidden;
+        animation: slideUp 0.8s ease-out 0.2s both;
+        margin-top: 40px;
+    }
+
+    .pagination::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 24px 24px 0 0;
+    }
+
+    .step-links {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+
+    .pagination-link {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pagination-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .pagination-link:hover::before {
+        left: 100%;
+    }
+
+    .pagination-link:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    .pagination-disabled {
+        padding: 12px 24px;
+        background: rgba(156, 163, 175, 0.3);
+        color: #9CA3AF;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .pagination-current {
+        padding: 12px 24px;
+        background: rgba(102, 126, 234, 0.1);
+        color: #374151;
+        border-radius: 12px;
+        font-weight: 700;
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .container {
+            padding: 0 20px;
+        }
+
+        .table-wrapper {
+            padding: 30px 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            min-width: 1000px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .applications-page {
+            padding: 30px 15px;
+        }
+
+        .table-wrapper {
+            padding: 25px 15px;
+            border-radius: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px 8px;
+            font-size: 0.85rem;
+        }
+
+        th {
+            font-size: 0.8rem;
+        }
+
+        .pagination {
+            padding: 25px 20px;
+            border-radius: 20px;
+        }
+
+        .step-links {
+            gap: 15px;
+        }
+
+        .pagination-link,
+        .pagination-disabled,
+        .pagination-current {
+            padding: 10px 18px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .table-wrapper {
+            padding: 20px 10px;
+        }
+
+        th,
+        td {
+            padding: 10px 6px;
+            font-size: 0.8rem;
+        }
+
+        td a {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+        }
+
+        .step-links {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .pagination-link,
+        .pagination-disabled,
+        .pagination-current {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+    }
+
+    /* Accessibility and reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+
+        .applications-page::before,
+        .table-wrapper,
+        .pagination,
+        th,
+        tbody tr {
+            animation: none;
+        }
+
+        tbody tr:hover,
+        td a:hover,
+        .pagination-link:hover {
+            transform: none;
+        }
+    }
+
+    @media (prefers-contrast: high) {
+
+        .table-wrapper,
+        .pagination {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(0, 0, 0, 0.3);
+        }
+
+        th {
+            color: #000;
+        }
+
+        td {
+            color: #000;
+        }
+
+        td a {
+            border-color: rgba(0, 0, 0, 0.5);
+            color: #000;
+        }
+    }
+
+    /* Focus states for accessibility */
+    td a:focus,
+    .pagination-link:focus {
+        outline: 2px solid #667eea;
+        outline-offset: 2px;
+    }
+
+    /* Floating decoration elements */
+    .applications-page::after {
+        content: '';
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        background: rgba(118, 75, 162, 0.08);
+        border-radius: 50%;
+        top: 20%;
+        right: -3%;
+        animation: floatSlow 18s ease-in-out infinite;
+        z-index: 1;
+    }
+
+    @keyframes floatSlow {
+
+        0%,
+        100% {
+            transform: translateY(0px) translateX(0px) rotate(0deg);
+        }
+
+        33% {
+            transform: translateY(-40px) translateX(25px) rotate(120deg);
+        }
+
+        66% {
+            transform: translateY(-20px) translateX(-10px) rotate(240deg);
+        }
+    }
+</style>
+
+<section class="applications-page">
+    <div class="container">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Portfolio</th>
+                        <th scope="col">Resume</th>
+                        <th scope="col">Job Advert</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date Posted</th>
+                        <th scope="col">Date Applied</th>
+                        <th scope="col">Total Applicants</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if my_applications %}
+                    {% for application in my_applications %}
+                    <tr>
+                        <td>{{ application.name }}</td>
+                        <td>{{ application.email }}</td>
+                        <td><a href="{{ application.portfolio_url }}" target="_blank">View Portfolio</a></td>
+                        <td>
+                            <a href="{{ application.cv.url }}" target="_blank">
+                                Download Resume
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'job_advert' application.job_advert.id %}" target="_blank">
+                                {{ application.job_advert.title }}
+                            </a>
+                        </td>
+                        <td>{{ application.status }}</td>
+                        <td>{{ application.job_advert.created_at }}</td>
+                        <td>{{ application.created_at }}</td>
+                        <td>{{application.job_advert.total_applicants}}</td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="12">No applications found.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <section class="container">
+        <div class="pagination">
+            <div class="step-links">
+                {% if my_applications.has_previous %}
+                <a class="pagination-link"
+                    href="?page={{ my_applications.previous_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">«
+                    Previous</a>
+                {% else %}
+                <span class="pagination-disabled">« Previous</span>
+                {% endif %}
+                <span class="pagination-current">
+                    Page {{ my_applications.number }} of {{ my_applications.paginator.num_pages }}
+                </span>
+                {% if my_applications.has_next %}
+                <a class="pagination-link"
+                    href="?page={{ my_applications.next_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">Next
+                    »</a>
+                {% else %}
+                <span class="pagination-disabled">Next »</span>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</section>
+
+{% endblock %}

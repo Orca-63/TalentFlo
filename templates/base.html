@@ -1,0 +1,534 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>TalentFlo - {% block title %}{% endblock %}</title>
+
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+       
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(1deg);
+            }
+        }
+
+        
+        .main-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        
+        .messages-wrapper {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .message-container {
+            margin-bottom: 12px;
+            animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-origin: right center;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(100%) scale(0.9);
+            }
+        }
+
+        .message {
+            position: relative;
+            padding: 16px 20px 16px 50px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.5;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                0 2px 8px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+
+        .message::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .message::after {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            font-weight: 600;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.15),
+                0 4px 12px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .message:hover::before {
+            width: 100%;
+        }
+
+        
+        .message-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .message-success::before {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .message-success::after {
+            content: '✓';
+            color: #10b981;
+            background: white;
+        }
+
+        .message-error,
+        .message-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #7f1d1d;
+            border-left: 4px solid #ef4444;
+        }
+
+        .message-error::before,
+        .message-danger::before {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .message-error::after,
+        .message-danger::after {
+            content: '⚠';
+            color: #ef4444;
+            background: white;
+        }
+
+        .message-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #78350f;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .message-warning::before {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .message-warning::after {
+            content: '⚡';
+            color: #f59e0b;
+            background: white;
+        }
+
+        .message-info {
+            background: rgba(102, 126, 234, 0.15);
+            color: #312e81;
+            border-left: 4px solid #667eea;
+        }
+
+        .message-info::before {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .message-info::after {
+            content: 'ℹ';
+            color: #667eea;
+        }
+
+        .message-debug {
+            background: rgba(107, 114, 128, 0.15);
+            color: #374151;
+            border-left: 4px solid #6b7280;
+        }
+
+        .message-debug::before {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+
+        .message-debug::after {
+            content: '🔧';
+            color: #6b7280;
+        }
+
+        .message-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.2s ease;
+            color: inherit;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message-close:hover {
+            opacity: 1;
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .message-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 0 0 12px 12px;
+            animation: progress 5s linear forwards;
+        }
+
+        @keyframes progress {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        
+        @media (max-width: 768px) {
+            .messages-wrapper {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+
+            .message {
+                padding: 14px 16px 14px 44px;
+                font-size: 13px;
+            }
+
+            .message::after {
+                left: 14px;
+                font-size: 16px;
+            }
+        }
+
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        }
+
+        
+        *:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        
+        @media print {
+            body::before {
+                display: none;
+            }
+
+            .messages-wrapper {
+                display: none;
+            }
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <div class="main-wrapper">
+       
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    
+    <script src="{% static 'main.js' %}"></script>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function () {
+           
+            initializeEnhancedMessages();
+
+           
+            if (typeof window.onload === 'function') {
+                const originalOnload = window.onload;
+                window.onload = function (e) {
+                    originalOnload(e);
+                    
+                    setTimeout(initializeEnhancedMessages, 100);
+                };
+            }
+        });
+
+        function initializeEnhancedMessages() {
+            const messages = document.querySelectorAll('.message');
+
+            if (messages.length === 0) return;
+
+            
+            let messagesWrapper = document.querySelector('.messages-wrapper');
+            if (!messagesWrapper) {
+                messagesWrapper = document.createElement('div');
+                messagesWrapper.className = 'messages-wrapper';
+                document.body.appendChild(messagesWrapper);
+
+                
+                messages.forEach((message, index) => {
+                    const container = document.createElement('div');
+                    container.className = 'message-container';
+
+                   
+                    const enhancedMessage = message.cloneNode(true);
+
+                   
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'message-close';
+                    closeBtn.innerHTML = '&times;';
+                    closeBtn.onclick = function () { dismissMessage(this); };
+                    enhancedMessage.appendChild(closeBtn);
+
+                    
+                    const progressBar = document.createElement('div');
+                    progressBar.className = 'message-progress';
+                    enhancedMessage.appendChild(progressBar);
+
+                    container.appendChild(enhancedMessage);
+                    messagesWrapper.appendChild(container);
+
+                    
+                    setTimeout(() => {
+                        if (enhancedMessage.parentElement) {
+                            dismissMessage(enhancedMessage.querySelector('.message-close'));
+                        }
+                    }, 5000 + (index * 500));
+                });
+
+                
+                messages.forEach(msg => {
+                    if (msg.style) {
+                        msg.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        function dismissMessage(button) {
+            const messageContainer = button.closest('.message-container');
+            const message = button.closest('.message');
+
+          
+            message.style.animation = 'slideOut 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+
+            
+            setTimeout(() => {
+                if (messageContainer && messageContainer.parentElement) {
+                    messageContainer.parentElement.removeChild(messageContainer);
+                }
+            }, 300);
+        }
+
+        
+        function showLoading(element) {
+            if (element) {
+                element.classList.add('loading');
+            }
+        }
+
+        function hideLoading(element) {
+            if (element) {
+                element.classList.remove('loading');
+            }
+        }
+
+        function addFadeIn(element) {
+            if (element) {
+                element.classList.add('fade-in');
+            }
+        }
+
+        
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                const messages = document.querySelectorAll('.message-close');
+                messages.forEach(closeBtn => dismissMessage(closeBtn));
+            }
+        });
+
+       
+        document.addEventListener('submit', function (e) {
+            const submitBtn = e.target.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitBtn && !submitBtn.classList.contains('no-loading')) {
+                showLoading(submitBtn);
+            }
+        });
+
+        
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
+            document.documentElement.style.setProperty('--animation-duration', '0.2s');
+        }
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>
