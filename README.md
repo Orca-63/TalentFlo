@@ -1,4 +1,4 @@
-# 📚 Campus Recruitment Platform
+# 💻 TalentFlo
 
 A web-based recruitment platform built using Django to streamline campus hiring processes.
 
@@ -9,7 +9,7 @@ A web-based recruitment platform built using Django to streamline campus hiring 
 - 📬 Asynchronous email notifications using Celery
 - ⚙️ Redis as a message broker for background task handling
 - 📈 Real-time task monitoring with Flower
-- ✉️ Transactional emails sent via Brevo (formerly Sendinblue)
+- ✉️ Transactional emails sent via Brevo 
 - 🐳 Docker used to containerize Redis for seamless integration
 
 ---
@@ -20,9 +20,9 @@ A web-based recruitment platform built using Django to streamline campus hiring 
 |------------------|-------------------|
 | Backend          | Django             |
 | Task Queue       | Celery             |
-| Message Broker   | Redis (via Docker) |
+| Message Broker   | Redis              |
 | Monitoring       | Flower             |
-| Email Service    | Brevo (SMTP)       |
+| Email Service    | Brevo              |
 | Containerization | Docker             |
 
 ---
