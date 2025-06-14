@@ -1,4 +1,4 @@
-![Screenshot 2025-06-14 235523](https://github.com/user-attachments/assets/8ebb669c-e88c-4a8c-a01c-b3d6b6fb4e4b)# 📚 Campus Recruitment Platform
+# 📚 Campus Recruitment Platform
 
 A web-based recruitment platform built using Django to streamline campus hiring processes.
 
