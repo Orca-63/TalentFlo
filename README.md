@@ -31,7 +31,8 @@ A web-based recruitment platform built using Django to streamline campus hiring 
 
 ###  1. Clone the repository
 git clone https://github.com/Orca-63/TalentFlo
-cd your-repo-name
+
+cd RecruitmentPlatform 
 ###  2. Create and activate a virtual environment
 python -m venv venv
 venv\Scripts\activate
