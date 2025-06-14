@@ -30,7 +30,7 @@ A web-based recruitment platform built using Django to streamline campus hiring 
 ##  How to Run the Project Locally
 
 ###  1. Clone the repository
-git clone [https://github.com/your-username/your-repo-name.git](https://github.com/Orca-63/TalentFlo)
+git clone https://github.com/Orca-63/TalentFlo
 cd your-repo-name
 ###  2. Create and activate a virtual environment
 python -m venv venv
