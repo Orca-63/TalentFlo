@@ -60,7 +60,5 @@ celery -A RecruitmentPlatform flower
 ### 7. Run the Django development server
 python manage.py runserver
 
-![Home Page](https://github.com/user-attachments/assets/2bfdd2cd-7bda-4a39-837f-fbe98b3d9f20) ![Screenshot 2025-06-14 235549](https://github.com/user-attachments/assets/d62df7d6-c235-4035-9c42-ea4a74147d7a)
-
 
 
